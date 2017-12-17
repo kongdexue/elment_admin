@@ -52,12 +52,9 @@
              
           </el-col>
           </el-row>
-      
-      
-     
     </el-header>
     <el-main style="border: 1px solid #eee;">
-      <el-table :data="tableData" style="width:100%">
+      <el-table :data="tableData" style="width:100%" stripe>
         <el-table-column label="日期" prop="date" width="180"></el-table-column>
         <el-table-column label="姓名" prop="name" width="180"></el-table-column>
         <el-table-column label="地址" prop="address" width="180"></el-table-column>
