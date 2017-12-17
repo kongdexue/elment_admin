@@ -54,11 +54,44 @@
           </el-row>
     </el-header>
     <el-main style="border: 1px solid #eee;">
-      <el-table :data="tableData" style="width:100%" stripe>
-        <el-table-column label="日期" prop="date" width="180"></el-table-column>
-        <el-table-column label="姓名" prop="name" width="180"></el-table-column>
-        <el-table-column label="地址" prop="address" width="180"></el-table-column>
+      <el-table :data="tableData" style="width:100%" stripe v-loading="isLoading" >
+        <el-table-column label="title" prop="title" width="180"></el-table-column>
+        <el-table-column label="create_at"  width="180">
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span>{{scope.row.create_at}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="visit_count" prop="visit_count" width="180"></el-table-column>
+        <el-table-column label="操作" width="200">
+          <template slot-scope="scope">
+              <el-button size="mini" type="success">编辑</el-button>
+              <el-button size="mini" type="danger" @click="dialogVisible" >删除</el-button>
+          </template>
+      </el-table-column>
+
       </el-table>
+    <el-pagination 
+      @size-change="changesize"  
+      @current-change="changeCurrent" 
+
+      :current-page="activePage" 
+      :page-size="activePageSize" 
+
+      :page-sizes="[5, 10, 15, 20]"
+      :layout="'total, sizes, prev, pager, next, jumper'" 
+      :total="200">
+    </el-pagination>
+    <el-dialog
+    title="提示"
+    :visible.sync="dialogVisible"
+    :before-close="handleClose">
+    <span>这是一段信息</span>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+  </el-dialog>
     </el-main>
   </el-container>
 </el-container>
@@ -69,31 +102,54 @@
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <!-- 引入组件库 -->
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
     new Vue({
       el: '#app',
       data: {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        isLoading:true,
+        activePageSize:10,
+        activePage:1,
+        dialogVisible: false
+      },
+      mounted:function(){
+        this.getList();
       },
        methods: {
-           
-        }
+           getList:function(){
+            axios.get("https://cnodejs.org/api/v1/topics",{
+              params:{
+                page:this.activePage,
+                limit:this.activePageSize
+              }
+            }).then(function(response){
+              this.isLoading=false;
+             this.tableData=response.data.data;
+
+            }.bind(this))
+           },
+           changesize:function(index){
+            this.activePageSize=index;
+          },
+          changeCurrent:function(page){
+            this.activePage=page;
+          },
+          handleClose(done) {
+        this.$confirm('确认关闭？')
+      
+    }
+        },
+        watch:{
+          activePage:function(){
+            this.getList();
+          },
+          activePageSize:function(){
+            this.getList();
+          }
+        },
+
+       
         
     })
   </script>
