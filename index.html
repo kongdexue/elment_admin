@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<style>
+  [v-cloak] {
+  display: none;
+}
+</style> 
+</head>
+<body>
+<div id="app">
+<el-container v-cloak style="height: 500px; border: 1px solid #eee">
+  <el-aside width="200px">
+    <el-menu>
+      <template slot="title">导航一</template>
+      <el-submenu index="1">
+        <template slot="title"><i class="el-icon-location"></i>分组一</template>
+        <el-menu-item index="1-1">选项一</el-menu-item>
+        <el-menu-item index="1-2">选项二</el-menu-item>
+      </el-submenu>
+      <el-submenu index="2">
+          <template slot="title"><i class="el-icon-location"></i>分组二</template>
+          <el-menu-item index="1-1">选项一</el-menu-item>
+          <el-menu-item index="1-2">选项二</el-menu-item>
+        </el-submenu>
+    </el-menu>
+  </el-aside>
+  <el-container>
+    <el-header style="border: 1px solid #eee;">
+        <el-row>
+            <el-col :span="16"><el-breadcrumb separator=">">
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>二层</el-breadcrumb-item>
+                <el-breadcrumb-item>三层</el-breadcrumb-item>
+              </el-breadcrumb></el-col>
+            <el-col :span="8"> 
+                <el-row>
+                    <el-dropdown trigger="click" >
+                        <el-col :span="16"><p>kongdeuxe</p></el-col>
+                        <el-col :span="8"><div><img src="287075.jpg" width="50"/></div></el-col> 
+                      
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>1</el-dropdown-item>
+                        <el-dropdown-item>2</el-dropdown-item>
+                        <el-dropdown-item>3</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                </el-row>
+             
+          </el-col>
+          </el-row>
+      
+      
+     
+    </el-header>
+    <el-main style="border: 1px solid #eee;">ddd</el-main>
+  </el-container>
+</el-container>
+
+</div>
+</body>
+  <!-- 先引入 Vue -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+       
+      },
+     
+       methods: {
+           
+        }
+        
+    })
+  </script>
+</html>
