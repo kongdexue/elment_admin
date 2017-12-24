@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<style>
+  [v-cloak] {
+  display: none;
+}
+</style> 
+</head>
+<body>
+<div id="app">
+<el-container v-cloak v-loading="isLoading" style=" border: 1px solid #eee">
+  <el-aside width="200px">
+    <el-menu>
+      <template slot="title">导航一</template>
+      <el-submenu index="1">
+        <template slot="title"><i class="el-icon-location"></i>分组一</template>
+        <el-menu-item index="1-1">选项一</el-menu-item>
+        <el-menu-item index="1-2">选项二</el-menu-item>
+      </el-submenu>
+      <el-submenu index="2">
+          <template slot="title"><i class="el-icon-location"></i>分组二</template>
+          <el-menu-item index="1-1">选项一</el-menu-item>
+          <el-menu-item index="1-2">选项二</el-menu-item>
+        </el-submenu>
+    </el-menu> 
+  </el-aside>
+  <el-container>
+    <el-header style="border: 1px solid #eee;">
+        <el-row>
+            <el-col :span="16"><el-breadcrumb separator=">">
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>二层</el-breadcrumb-item>
+                <el-breadcrumb-item>三层</el-breadcrumb-item>
+              </el-breadcrumb></el-col>
+            <el-col :span="8"> 
+                <el-row>
+                    <el-dropdown trigger="click" >
+                        <el-col :span="16"><p>kongdeuxe</p></el-col>
+                        <el-col :span="8"><div><img src="287075.jpg" width="50"/></div></el-col> 
+                      
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>1</el-dropdown-item>
+                        <el-dropdown-item>2</el-dropdown-item>
+                        <el-dropdown-item>3</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                </el-row>
+             
+          </el-col>
+          </el-row>
+    </el-header>
+    <el-main style="border: 1px solid #eee;">
+      <el-form :model="form" label-width="80px">
+        <el-form-item label="标题" prop="title" :rules="[{required:true,message:'标题不能为空'}]">
+          <el-input v-model="form.title" placeholder="标题"></el-input>
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-select v-model="form.category" placeholder="请选择类型">
+            <el-option label="类型1" value="1"></el-option>
+            <el-option label="类型2" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-col :span="11">
+            <el-date-picker v-model="form.date1" style="width:100%;" placeholder=""></el-date-picker>
+          </el-col>
+          <el-col :span="11">
+            <el-time-picker v-model="form.date2" style="width:100%;" placeholder=""></el-time-picker>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否免费">
+          <el-switch v-model="form.isfree"></el-switch>
+        </el-form-item>
+        <el-form-item label="文章标签">
+          <el-checkbox-group v-model="form.type">
+            <el-checkbox label="美食" name="type"></el-checkbox>
+            <el-checkbox label="活动" name="type"></el-checkbox>
+            <el-checkbox label="娱乐" name="type"></el-checkbox>
+            <el-checkbox label="学习" name="type"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="来源">
+          <el-radio-group v-model="form.resource">
+            <el-radio label="原创"></el-radio>
+            <el-radio label="网络"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="补充">
+          <el-input type="textarea" v-model="form.desc" placeholder=""></el-input>
+        </el-form-item>
+        <el-form-item >
+          <el-button type="primary" @click="onSubmit">立即创建</el-button>
+          <el-button >取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-main>
+  </el-container>
+</el-container>
+
+</div>
+</body>
+  <!-- 先引入 Vue -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        isLoading:false,
+        form:{
+          title: '',
+          category: '',
+          date1: '',
+          date2: '',
+          isFree: false,
+          type: [],
+          resource: '',
+          desc: ''
+        }
+      },
+       methods: {
+          onSubmit:function(){
+            this.isLoading=true;
+            setTimeout(function(){
+              this.isLoading=false;
+              this.$message("创建成功");
+            }.bind(this),3000);
+          }
+      
+    
+        },
+      
+
+       
+        
+    })
+  </script>
+</html>

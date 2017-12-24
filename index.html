@@ -12,29 +12,47 @@
 </head>
 <body>
 <div id="app">
-<el-container v-cloak style="height: 500px; border: 1px solid #eee">
-  <el-aside width="200px">
-    <el-menu>
-      <template slot="title">导航一</template>
-      <el-submenu index="1">
-        <template slot="title"><i class="el-icon-location"></i>分组一</template>
-        <el-menu-item index="1-1">选项一</el-menu-item>
-        <el-menu-item index="1-2">选项二</el-menu-item>
-      </el-submenu>
-      <el-submenu index="2">
-          <template slot="title"><i class="el-icon-location"></i>分组二</template>
-          <el-menu-item index="1-1">选项一</el-menu-item>
-          <el-menu-item index="1-2">选项二</el-menu-item>
-        </el-submenu>
-    </el-menu>
-  </el-aside>
+<el-container v-cloak style=" border: 1px solid #eee">
+   <el-aside width="200px">
+                <!-- 菜单 -->
+                <el-menu  default-active="2" class="el-menu-vertical-demo">
+                    <h3 class="logo" align="center">
+                        <i class="el-icon-edit"></i> Atom System</h3>
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>文章管理</span>
+                        </template>
+                        <el-menu-item-group>
+                            <template slot="title">分组一</template>
+                            <el-menu-item index="1-1">选项1</el-menu-item>
+                            <el-menu-item index="1-2">选项2</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item-group title="分组2">
+                            <el-menu-item index="1-3">选项3</el-menu-item>
+                        </el-menu-item-group>
+                        <el-submenu index="1-4">
+                            <template slot="title">选项4</template>
+                            <el-menu-item index="1-4-1">选项1</el-menu-item>
+                        </el-submenu>
+                    </el-submenu>
+                    <el-menu-item index="2">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">人员管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">设置</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
   <el-container>
     <el-header style="border: 1px solid #eee;">
         <el-row>
             <el-col :span="16"><el-breadcrumb separator=">">
                 <el-breadcrumb-item>首页</el-breadcrumb-item>
-                <el-breadcrumb-item>二层</el-breadcrumb-item>
-                <el-breadcrumb-item>三层</el-breadcrumb-item>
+                <el-breadcrumb-item>文章管理</el-breadcrumb-item>
+                <el-breadcrumb-item>列表</el-breadcrumb-item>
               </el-breadcrumb></el-col>
             <el-col :span="8"> 
                 <el-row>
@@ -43,30 +61,41 @@
                         <el-col :span="8"><div><img src="287075.jpg" width="50"/></div></el-col> 
                       
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>1</el-dropdown-item>
-                        <el-dropdown-item>2</el-dropdown-item>
-                        <el-dropdown-item>3</el-dropdown-item>
+                          <el-dropdown-item>查看</el-dropdown-item>
+                          <el-dropdown-item>新增</el-dropdown-item>
+                          <el-dropdown-item>删除</el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
-                </el-row>
+                <el-row>
              
           </el-col>
           </el-row>
     </el-header>
     <el-main style="border: 1px solid #eee;">
-      <el-table :data="tableData" style="width:100%" stripe v-loading="isLoading" >
-        <el-table-column label="title" prop="title" width="180"></el-table-column>
-        <el-table-column label="create_at"  width="180">
+      <el-table :data="tableData"  stripe v-loading="isLoading" :default-sort = "{prop: 'create_at', order: 'descending'}" >
+          <el-table-column  type="selection" width="55"></el-table-column>
+        <el-table-column label="标题" sortable prop="title" width="200">
+            <template slot-scope="scope">
+                <el-popover placement="top" trigger="hover">
+                    <h4 style="width: 200px;">{{scope.row.title}}</h4>
+                    <div slot="reference">
+                        <span>{{scope.row.title.substr(0,20) + '...'}}</span>
+                    </div>
+                </el-popover>
+            </template>
+
+        </el-table-column>
+        <el-table-column label="时间" sortable  width="240">
           <template slot-scope="scope">
             <i class="el-icon-time"></i>
             <span>{{scope.row.create_at}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="visit_count" prop="visit_count" width="180"></el-table-column>
+        <el-table-column label="访问量" sortable prop="visit_count" width="100"></el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-              <el-button size="mini" type="success">编辑</el-button>
-              <el-button size="mini" type="danger" @click="dialogVisible" >删除</el-button>
+              <el-button size="mini" type="success" @click="showEditPanel(scope.$index)">编辑</el-button>
+              <el-button size="mini" type="danger" @click="remove(scope.$index)" >删除</el-button>
           </template>
       </el-table-column>
 
@@ -82,14 +111,17 @@
       :layout="'total, sizes, prev, pager, next, jumper'" 
       :total="200">
     </el-pagination>
-    <el-dialog
-    title="提示"
-    :visible.sync="dialogVisible"
-    :before-close="handleClose">
-    <span>这是一段信息</span>
+
+    <el-dialog title="提示" :visible.sync="isShowEditPanel" >
+    <span>当前索引：{{form.index}}</span>
+    <el-form :model="form">
+      <el-form-item label="标题">
+        <el-input v-model="form.title" ></el-input>
+      </el-form-item>
+    </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="isShowEditPanel = false">取 消</el-button>
+      <el-button type="primary" @click="saveEdit">确 定</el-button>
     </span>
   </el-dialog>
     </el-main>
@@ -111,7 +143,12 @@
         isLoading:true,
         activePageSize:10,
         activePage:1,
-        dialogVisible: false
+        dialogVisible: false,
+        isShowEditPanel:false,
+        form:{
+          title:'',
+          index:0
+        }
       },
       mounted:function(){
         this.getList();
@@ -136,9 +173,27 @@
             this.activePage=page;
           },
           handleClose(done) {
-        this.$confirm('确认关闭？')
-      
-    }
+            this.$confirm('确认关闭？')
+          },
+          showEditPanel(index){
+            this.isShowEditPanel=true;
+            this.form.index=index;
+            this.form.title=this.tableData[index].title;
+          },
+          saveEdit(){
+            this.tableData[this.form.index].title=this.form.title;
+            this.isShowEditPanel=false;
+            this.isLoading=true;
+            setTimeout(function(){
+              this.isLoading=false;
+              this.$message("修改成功");
+            }.bind(this),1000);
+          },
+          remove(index){
+            this.$confirm("是否删除文章："+this.tableData[index].title).then(function(){
+              this.tableData.splice(index,1);
+            }.bind(this));
+          }
         },
         watch:{
           activePage:function(){
