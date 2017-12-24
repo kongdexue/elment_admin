@@ -17,7 +17,7 @@
                 <!-- 菜单 -->
                 <el-menu  default-active="2" class="el-menu-vertical-demo">
                     <h3 class="logo" align="center">
-                        <i class="el-icon-edit"></i> Atom System</h3>
+                        <i class="el-icon-edit"></i> elment</h3>
                     <el-submenu index="1">
                         <template slot="title">
                             <i class="el-icon-location"></i>
@@ -58,7 +58,7 @@
                 <el-row>
                     <el-dropdown trigger="click" >
                         <el-col :span="16"><p>kongdeuxe</p></el-col>
-                        <el-col :span="8"><div><img src="287075.jpg" width="50"/></div></el-col> 
+                        <el-col :span="8"><div><img src="287075.jpg" width="50" height="50"/></div></el-col> 
                       
                       <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item>查看</el-dropdown-item>
@@ -72,8 +72,8 @@
           </el-row>
     </el-header>
     <el-main style="border: 1px solid #eee;">
-      <el-table :data="tableData"  stripe v-loading="isLoading" :default-sort = "{prop: 'create_at', order: 'descending'}" >
-          <el-table-column  type="selection" width="55"></el-table-column>
+      <el-table :data="tableData" @selection-change="selectedIds"  stripe v-loading="isLoading" :default-sort = "{prop: 'create_at', order: 'descending'}" >
+          <el-table-column  type="selection" width="55" ></el-table-column>
         <el-table-column label="标题" sortable prop="title" width="200">
             <template slot-scope="scope">
                 <el-popover placement="top" trigger="hover">
@@ -111,7 +111,7 @@
       :layout="'total, sizes, prev, pager, next, jumper'" 
       :total="200">
     </el-pagination>
-
+    <el-button size="mini" type="danger" @click="removeall()" >多删</el-button>
     <el-dialog title="提示" :visible.sync="isShowEditPanel" >
     <span>当前索引：{{form.index}}</span>
     <el-form :model="form">
@@ -148,7 +148,8 @@
         form:{
           title:'',
           index:0
-        }
+        },
+        selectedId:[]
       },
       mounted:function(){
         this.getList();
@@ -193,6 +194,22 @@
             this.$confirm("是否删除文章："+this.tableData[index].title).then(function(){
               this.tableData.splice(index,1);
             }.bind(this));
+          },
+        selectedIds(selection){
+          this.selectedId=[];
+          for(var v in selection){
+            this.selectedId.push(selection[v].id);
+          }
+        },
+          removeall(){
+            for( var i in this.selectedId){
+              for( var j in this.tableData){
+                if(this.selectedId[i] === this.tableData[j].id){
+                  this.tableData.splice(j,1);
+                  break;
+                }
+              }
+            }
           }
         },
         watch:{
